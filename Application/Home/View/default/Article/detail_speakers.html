@@ -55,11 +55,9 @@
                         <div class="speaker__article">
                             <div class="g-aside">
                                 <img src="{$info.cover_id|get_cover='path'}" alt="" width="500" height="500">
-                                <php>$honors=explode(',',$info['honor']);</php>
+                                
                                 <ul>
-                                    <volist name="honors" id="vo">
-                                        <li>{$vo}</li>
-                                    </volist>
+                                    {{@ text }}
                                 </ul>
                             </div>
                             <div class="g-main">
@@ -81,7 +79,8 @@
                                         title: 'SPEAKERS',
                                         article_title: '{$info.title_en}',
                                         introduce: 'Introduce',
-                                        article_content: '{$info.content_en}'
+                                        article_content: '{$info.content_en}',
+                                        text: '{$info.honor_en}'
                                     },
                                 },
                                 cn: {
@@ -98,6 +97,7 @@
                                 title: t('main:title'),
                                 article_title: t('main:article_title'),
                                 article_content: t('main:article_content'),
+                                text: t('main:text'),
                             });
                         });
                     </script>

@@ -56,7 +56,16 @@
                                 <div class="swiper-container">
                                     <div class="swiper-wrapper">
                                         
-                                            {:hook('Silder')}
+                                        {{each item}}
+                                           <div class="swiper-slide">
+                                                <div class="index-banner-list__item">
+                                                    <img src="{{ $value.path }}" alt="">
+                                                    <h4>{{ $value.title }}</h4>
+                                                    <p>{{ $value.sildertext }}</p>
+                                                    <span>{{ $value.content }}</span>
+                                                </div>
+                                            </div> 
+                                        {{/each}}
                                         
                                     </div>
                                 </div>
@@ -70,25 +79,25 @@
                                 <div class="g-container">
                                     <div class="speaker-list__list">
                                         <ul>
-                                            <article:list name="article" category="39" child="false" row="8">    
+                                            {{each speakers}}    
                                             <!-- 单个嘉宾 start item/speaker-item -->
                                                 <li>
-                                                    <a href="{:U('Article/detail?id='.$article['id'])}">
+                                                    <a href="/index.php?s=/Home/Article/detail/id/{{ $value.id }}.html">
                                                         <div class="speaker-list__item">
                                                             <div class="speaker-list__avatar">
-                                                                <img src="{:get_sc($article['cover_id'],'360','360')}" alt="{$article.title}" width="360" height="360">
+                                                                <img src="{{ $value.path }}" alt="" width="360" height="360">
                                                             </div>
-                                                            <php>$honors=explode(',',$article['description']);</php>
+                                                            
                                                             <div class="speaker-list__popup">
-                                                                <h4>{$article.title}</h4>
-                                                                <p>{$honors[0]}</p>
-                                                                <i>详情</i>
+                                                                <h4>{{ $value.title }}</h4>
+                                                                <p>{{ $value.text }}</p>
+                                                                <i>{{ detail }}</i>
                                                             </div>
                                                         </div>
                                                     </a>
                                                 </li>
                                                 <!-- 单个嘉宾 end -->
-                                            </article:list>
+                                            {{/each}}
 
                                             
                                             <li class="index-speaker-list__more">
@@ -106,21 +115,21 @@
                             <div class="g-tab">{{ sections[1] }}</div>
                             <div class="swiper-container">
                                 <div class="swiper-wrapper">
-                                    <article:list name="article" category="41" child="false" row="5">
+                                    {{each cases}}
                                         <div class="swiper-slide">
                                             <!-- 单个案例 start index/case -->
-                                            <a href="{:U('Article/detail?id='.$article['id'])}" title="{$article.title}">
+                                            <a href="http://heavyrain.test/index.php?s=/Home/Article/detail/id/{{ $value.id }}.html" title="">
                                                 <div class="index-case-list__item">
-                                                    <img src="{:get_sc($article['cover_id'],'600','400')}" alt="{$article.title}" width="600" height="400">
-                                                    <h4>{$article.title}</h4>
-                                                    <p>{$article.description}</p>
+                                                    <img src="{{ $value.path }}" alt="" width="600" height="400">
+                                                    <h4>{{ $value.title }}</h4>
+                                                    <p>{{ $value.description }}</p>
                                                     
                                                 </div>
                                             </a>
                                             <!-- 单个案例 end -->
 
                                         </div>  
-                                    </article:list>  
+                                    {{/each}} 
                                 </div>
                             </div>
                         </div>
@@ -158,12 +167,62 @@
                                     main: {
                                         sections: ['SPEAKERS', 'CASE', 'VIDEO'],
                                         more: 'MORE',
+                                        item: [
+
+                                            <?php
+
+                                                foreach ($addons_info as $key=>$value){
+                                                    echo "{title: ' " . $value['title_en'] . "', path: '" . $value['path'] . "',sildertext:' " . addslashes($value['sildertext_en']). "', content:''},";
+                                                }
+                                                 
+                                            ?>
+                                            
+                                        ],
+                                        detail: 'detail',
+                                        speakers: [
+                                            <?php
+                                                foreach ($speakers as $key=>$value){
+                                                    echo "{title: ' " . $value['title_en'] . "', path: '" . get_cover($value['cover_id'],'path') . "',text:' " . $value['honor_en']. "', id: '" . $value['id'] . "'},";
+                                                }
+                                            ?>
+                                        ],
+                                        cases: [
+                                            <?php
+                                                foreach ($cases as $key=>$value){
+                                                    echo "{title: ' " . $value['title'] . "', path: '" . get_cover($value['cover_id'],'path') . "',text:' " . $value['description']. "', id: '" . $value['id'] . "'},";
+                                                }
+                                            ?>
+                                        ]
                                     },
                                 },
                                 cn: {
                                     main: {
                                         sections: ['演讲嘉宾', '成功案例', '视频'],
                                         more: '更多嘉宾',
+                                        item: [
+                                            <?php
+
+                                                foreach ($addons_info as $key=>$value){
+                                                    echo "{title: ' " . $value['title'] . "', path: '" . $value['path'] . "',sildertext:' " . addslashes($value['sildertext']). "', content:''},";
+                                                }
+                                                 
+                                            ?>
+                                        ],
+                                        detail:'详情',
+                                        speakers: [
+                                            <?php
+                                                foreach ($speakers as $key=>$value){
+                                                    echo "{title: ' " . $value['title'] . "', path: '" . get_cover($value['cover_id'],'path') . "',text:' " . $value['honor_cn']. "', id: '" . $value['id'] . "'},";
+                                                }
+                                            ?>
+                                        ],
+                                        cases: [
+                                            <?php
+                                                foreach ($cases as $key=>$value){
+                                                    echo "{title: ' " . $value['title'] . "', path: '" . get_cover($value['cover_id'],'path') . "',text:' " . $value['description']. "', id: '" . $value['id'] . "'},";
+                                                }
+                                            ?>
+                                        ]
                                     },
                                 },
                             },
@@ -171,6 +230,10 @@
                             document.querySelector('[tpl="main"]').innerHTML = template('tpl-main', {
                                 sections: t('main:sections'),
                                 more: t('main:more'),
+                                item: t('main:item'),
+                                speakers: t('main:speakers'),
+                                detail: t('main:detail'),
+                                cases: t('main:cases'),
                             });
                         });
                     </script>

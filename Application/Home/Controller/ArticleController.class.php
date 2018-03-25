@@ -53,6 +53,8 @@ class ArticleController extends HomeController {
 			$this->error('文档ID错误！');
 		}
 
+		$li = '';
+
 		/* 页码检测 */
 		$p = intval($p);
 		$p = empty($p) ? 1 : $p;
@@ -80,7 +82,14 @@ class ArticleController extends HomeController {
 		$info['content'] = str_replace(["\r\n","\n","\n"], "",$info['content']);
 		$info['content_en'] = str_replace(["\r\n","\n","\n"], "",$info['content_en']);
 		$info['content_en'] = str_replace(["'"], "&#39;",$info['content_en']);
-
+		$info['honor_en'] = explode(',',$info['honor_en']);
+		
+		foreach ($info['honor_en'] as $key => $value) {
+			$li .= '<li>'. $value .'</li>';
+		}
+		
+		unset($info['honor_en']);
+		$info['honor_en'] = $li;
 		/* 更新浏览数 */
 		$map = array('id' => $id);
 		$Document->where($map)->setInc('view');

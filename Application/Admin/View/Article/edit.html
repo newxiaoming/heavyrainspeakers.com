@@ -8,7 +8,9 @@
 <block name="body">
 	
 	<!--引入CSS-->
-	<link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css">
+	<!-- <link rel="stylesheet" type="text/css" href="__STATIC__/webuploader/webuploader.css"> -->
+	<link href="__STATIC__/css/upload.css" rel="stylesheet">
+	<script src="__STATIC__/js/upload.js"></script>
 	<style>
 	.webuploader-element-invisible{
 		margin-top: 10px;
@@ -108,9 +110,9 @@
 									</div>
 								</div> -->
 								<!--dom结构部分-->
-								<div id="uploader-demo controls">
-									<div id="fileList" class="uploader-list"></div>
-									<div id="filePicker">选择图片</div>
+								<!-- <div id="uploader-demo_{$field.name} controls">
+									<div id="fileList_{$field.name}" class="uploader-list"></div>
+									<div id="filePicker_{$field.name}" onClick="webUpload('{$field.name}')" class="imageupload">选择图片</div>
 									
 									<input type="hidden" name="{$field.name}" id="cover_id_{$field.name}" value="{$data[$field['name']]}"/>
 									<div class="upload-img-box">
@@ -118,8 +120,78 @@
 										<div class="upload-pre-item"><img src="{$data[$field['name']]|get_cover='path'}"/></div>
 									</notempty>
 									</div>
+								</div> -->
+
+								<div class="upload-box">
+								    <p class="upload-tip">作品图片：最多可以上传5张图片，马上上传</p>
+								    <div class="image-box clear">
+								        <section class="upload-section">
+								            <div class="upload-btn"></div>
+								            <input type="file" name="file" id="upload-input_{$field.name}" value="{$data[$field['name']]}"/>
+								        </section>
+								    </div>
 								</div>
+
 								<script type="text/javascript">
+									$("#upload-input_{$field.name}").ajaxImageUpload({
+									    url: "{:U('File/uploadPicture',array('session_id'=>session_id()))}", //上传的服务器地址
+									    data: { name:'heavy' },
+									    maxNum: 1, //允许上传图片数量
+									    zoom: true, //允许放大
+									    allowType: ["jpeg", "jpg",'png'], //允许上传图片的类型
+									    maxSize :2, //允许上传图片的最大尺寸，单位M
+									    before: function () {
+									        alert('上传前回调函数');
+									    },
+									    success:function(data){
+									        alert('上传成功回调函数');
+									        console.log(data);
+									    },
+									    error:function (e) {
+									        alert('上传失败回调函数');
+									        console.log(e);
+									    }
+									});
+
+								</script>
+								
+								<!-- <script type="text/javascript">
+								//上传图片
+							    /* 初始化上传插件 */
+								$("#upload_picture_{$field.name}").uploadify({
+							        "height"          : 30,
+							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
+							        "fileObjName"     : "download",
+							        "buttonText"      : "上传图片",
+							        "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
+							        "width"           : 120,
+							        'removeTimeout'	  : 1,
+							        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
+							        "onUploadSuccess" : uploadPicture{$field.name},
+							        'onFallback' : function() {
+							            alert('未检测到兼容版本的Flash.');
+							        }
+							    });
+								function uploadPicture{$field.name}(file, data){
+							    	var data = $.parseJSON(data);
+							    	var src = '';
+							        if(data.status){
+							        	$("#cover_id_{$field.name}").val(data.id);
+							        	src = data.url || '__ROOT__' + data.path
+							        	$("#cover_id_{$field.name}").parent().find('.upload-img-box').html(
+							        		'<div class="upload-pre-item"><img src="' + src + '"/></div>'
+							        	);
+							        } else {
+							        	updateAlert(data.info);
+							        	setTimeout(function(){
+							                $('#top-alert').find('button').click();
+							                $(that).removeClass('disabled').prop('disabled',false);
+							            },1500);
+							        }
+							    }
+								</script> -->
+                            </case>
+                            <script type="text/javascript">
 									var src = '';
 
 									// 初始化Web Uploader
@@ -136,13 +208,13 @@
 
 										// 选择文件的按钮。可选。
 										// 内部根据当前运行是创建，可能是input元素，也可能是flash.
-										pick: '#filePicker',
+										pick: '.imageupload',
 										fileVal : "download",
 
 										// 只允许选择图片文件。
 										accept: {
 											title: 'Images',
-											extensions: 'gif,jpg,jpeg,bmp,png',
+											extensions: 'jpg,jpeg,png',
 											mimeTypes: 'image/*'
 										}
 									});
@@ -180,43 +252,11 @@
 												'<div class="upload-pre-item"><img src="' + src + '"/></div>'
 										);
 									}); 
+
+									function webUpload(id) {
+									    $("#filePicker_"+id).addClass("filePicker");
+									}
 								</script>
-								<!-- <script type="text/javascript">
-								//上传图片
-							    /* 初始化上传插件 */
-								$("#upload_picture_{$field.name}").uploadify({
-							        "height"          : 30,
-							        "swf"             : "__STATIC__/uploadify/uploadify.swf",
-							        "fileObjName"     : "download",
-							        "buttonText"      : "上传图片",
-							        "uploader"        : "{:U('File/uploadPicture',array('session_id'=>session_id()))}",
-							        "width"           : 120,
-							        'removeTimeout'	  : 1,
-							        'fileTypeExts'	  : '*.jpg; *.png; *.gif;',
-							        "onUploadSuccess" : uploadPicture{$field.name},
-							        'onFallback' : function() {
-							            alert('未检测到兼容版本的Flash.');
-							        }
-							    });
-								function uploadPicture{$field.name}(file, data){
-							    	var data = $.parseJSON(data);
-							    	var src = '';
-							        if(data.status){
-							        	$("#cover_id_{$field.name}").val(data.id);
-							        	src = data.url || '__ROOT__' + data.path
-							        	$("#cover_id_{$field.name}").parent().find('.upload-img-box').html(
-							        		'<div class="upload-pre-item"><img src="' + src + '"/></div>'
-							        	);
-							        } else {
-							        	updateAlert(data.info);
-							        	setTimeout(function(){
-							                $('#top-alert').find('button').click();
-							                $(that).removeClass('disabled').prop('disabled',false);
-							            },1500);
-							        }
-							    }
-								</script> -->
-                            </case>
                             <case value="file">
 								<div class="controls">
 									<input type="file" id="upload_file_{$field.name}">
